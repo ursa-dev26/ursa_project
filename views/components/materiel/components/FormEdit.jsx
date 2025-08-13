@@ -26,7 +26,7 @@ const FormEdit = ({ data, setData, materiel }) => {
         "Content-type": "application/json",
         "Access-Control-Allow-Origin": " *"
     }
-    const ListOptions = ["Neuf","Hors service","autre"]
+    const ListOptions = ["Neuf", "Hors service", "autre"]
 
     const [form] = Form.useForm()
     const navigate = useNavigate()
@@ -37,7 +37,7 @@ const FormEdit = ({ data, setData, materiel }) => {
         try {
             const request = await window.fetch(`${api}/materiel/update/${materiel}`, {
                 headers: headersHttp,
-                body:JSON.stringify(data),
+                body: JSON.stringify(data),
                 method: "PATCH",
                 mode: "cors"
             })
@@ -51,7 +51,8 @@ const FormEdit = ({ data, setData, materiel }) => {
             }
             return json
         } catch (error) {
-            console.log(error);
+            new Error("" + error)
+
             return null
         }
     }

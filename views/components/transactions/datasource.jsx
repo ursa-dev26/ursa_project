@@ -30,9 +30,8 @@ class DataSource {
             const json = await query.json()
             return json
         } catch (error) {
-            console.log(error);
-
-            console.log({ "erreur": error });
+            new Error("" + error)
+            return null
 
         }
 

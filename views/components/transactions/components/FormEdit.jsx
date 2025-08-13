@@ -43,7 +43,8 @@ const FormEdit = ({ transaction, setTransaction, agence, materiel, id }) => {
             const json = await request.json()
             return json;
         } catch (error) {
-            console.log(error);
+            new Error("" + error)
+
             return null
 
         }
@@ -173,7 +174,7 @@ const FormEdit = ({ transaction, setTransaction, agence, materiel, id }) => {
             </div>
         </>
 
-    ) : <EmptydataLoad title={null}  />
+    ) : <EmptydataLoad title={null} />
 
 };
 

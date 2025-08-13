@@ -8,12 +8,10 @@ import {
     LogoutOutlined,
     HomeOutlined
 } from "@ant-design/icons"
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from '../components/auth/AuthContext.jsx';
-
-
-
+import isValuePresent from "./validate.js";
 
 const { Header, Content, Footer, Sider } = Layout
 
@@ -85,7 +83,10 @@ const URSALayout = ({ children }) => {
     }
 
 
+    useEffect(() => {
+       
 
+    }, [isLoggedIn]);
 
     return !isLoggedIn ? (<Layout>
         <Content children={children} style={{
@@ -156,13 +157,16 @@ const URSALayout = ({ children }) => {
 
             </Header>
             <Layout>
+                {isValuePresent(user) ? user?.fonction == "Administation de base de donnée" ?
+                    <Sider width={200} style={{ background: colorBgContainer }} trigger={null} collapsible collapsed={collapsed}  >
+                        <Menu mode="inline" theme="dark"
+                            items={items}
+                            style={{ height: '128%', borderRight: 0 }}>
+                        </Menu>
+                    </Sider> : <></>
+                    : <></>
+                }
 
-                <Sider width={200} style={{ background: colorBgContainer }} trigger={null} collapsible collapsed={collapsed}  >
-                    <Menu mode="inline" theme="dark"
-                        items={items}
-                        style={{ height: '128%', borderRight: 0 }}>
-                    </Menu>
-                </Sider>
 
                 <Layout style={{ padding: '0 24px 24px' }}>
 
@@ -177,10 +181,10 @@ const URSALayout = ({ children }) => {
                     }} />
 
 
-                    <Footer style={{ position: "relative",maxHeight:50, background: "colorBgContainer", textAlign: "center" }}>
+                    <Footer style={{ position: "relative", maxHeight: 50, background: "colorBgContainer", textAlign: "center" }}>
                         <Watermark content={"URSA"}>
 
-                            <div style={{ display: "flex",top:"0px" }}>
+                            <div style={{ display: "flex", top: "0px" }}>
                                 <div><Avatar size={60} style={{ background: "gray" }}
                                     icon={isLoggedIn ? <UserOutlined style={{ fontSize: "30px" }} /> :
                                         <Image preview={false} src="../src/assets/logo1.png" />

@@ -1,8 +1,7 @@
-import { ArrowDownOutlined, CommentOutlined, FilePdfFilled, IdcardFilled, UsergroupAddOutlined } from "@ant-design/icons";
-import { Alert, Avatar, Button, Card, List, Skeleton } from "antd";
+import { EyeOutlined, FilePdfFilled, IdcardFilled } from "@ant-design/icons";
+import { Alert, Avatar, Badge, Button, Card, List, Skeleton } from "antd";
 import { useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
-import { useNavigate } from "react-router-dom";
 import FormAdd from "./FormAdd";
 import { useEffect } from "react";
 
@@ -18,7 +17,6 @@ const ListNonassigne = () => {
         Accept: "application/json",
         "Content-type": "application/json",
     }
-    const navigate = useNavigate()
 
     // different etat local
     const [data, setData] = useState([])
@@ -178,21 +176,7 @@ const ListNonassigne = () => {
 
             }}>
 
-            <div style={{
-                justifyContent: "center",
-                alignItems: "center",
-                color: "blue",
-                fontStyle: "italic",
-                fontFamily: "monospace",
-            }}>
-                <span style={{
 
-                    fontSize: "20px",
-                }} >Totals ticket:&nbsp;&nbsp;{data.concat(dataJoin)?.length}</span>&nbsp;&nbsp;/
-                Signé:&nbsp;&nbsp;{comptesign} &nbsp;&nbsp;/Non signé:&nbsp;&nbsp;{compteNOsign}
-
-
-            </div>
             <InfiniteScroll
                 style={{
                     position: "relative",
@@ -217,6 +201,17 @@ const ListNonassigne = () => {
                                 title={<Alert style={item?.status == 0 ? { background: "#fef9f2" } : {}}
                                     message={
                                         <div style={{ display: 'flex', justifyContent: "left" }}>
+
+                                            <div style={{
+                                                justifyContent: "center",
+                                                alignItems: "center",
+                                                color: "blue",
+                                                fontStyle: "italic",
+                                                fontFamily: "monospace",
+                                                fontSize: "20px",
+                                            }}>
+                                                <Badge color="geekblue" count={index + 1 + "/" + data.concat(dataJoin)?.length} />
+                                            </div>&nbsp;&nbsp;
                                             <Avatar icon={<IdcardFilled />} />
                                             <div style={{ margin: "3px" }}>{`  ${item.code}: ${item?.incident}`}</div>
                                         </div>
@@ -239,18 +234,10 @@ const ListNonassigne = () => {
                                                 showinfo ? widget.style.display = "flex" : widget.style.display = "none"
                                             }}
                                             style={{ background: 'green', padding: "1rem", margin: "0.1rem" }} icon={<Button
-                                                type="link" icon={<UsergroupAddOutlined
+                                                type="link" icon={<EyeOutlined
                                                     style={{ color: "white", fontSize: "18px" }} />} />} />
-                                        {/** widget pour ouvrir une commentaire */}
 
-                                        <Avatar key={"comment"} onClick={
-                                            (e) => {
-                                                navigate(`/assignation/commentaire?code=${item?.code}`)
-                                                e.stopPropagation()
-                                            }
-                                        } style={{ background: 'green', padding: "1rem", margin: "0.1rem" }} icon={<Button
-                                            type="link" icon={<CommentOutlined
-                                                style={{ color: "white", fontSize: "18px" }} />} />} />
+
 
 
                                     </> : <>
@@ -258,20 +245,16 @@ const ListNonassigne = () => {
                                         {/** widget pour ouvrir les information du commentaire */}
 
                                         <Avatar onClick={
-                                            (e) => {
-                                                navigate(`/assignation/commentaire?code=${item?.code}`)
-                                                e.stopPropagation()
+                                            () => {
+                                                setShowinfo(!showinfo)
+                                                let widget = document.querySelector(".desc" + index)
+
+                                                showinfo ? widget.style.display = "flex" : widget.style.display = "none"
                                             }
                                         } style={{ background: 'green', padding: "1rem", margin: "0.1rem" }} icon={<Button
-                                            type="link" icon={<CommentOutlined
+                                            type="link" icon={<EyeOutlined
                                                 style={{ color: "white", fontSize: "18px" }} />} />} />
-                                        <sub onClick={() => {
-                                            setShowinfo(!showinfo)
-                                            let widget = document.querySelector(".desc" + index)
 
-                                            showinfo ? widget.style.display = "flex" : widget.style.display = "none"
-
-                                        }}>Lire la suite ...</sub>
                                     </>}
                                 />}
                                 description={

@@ -80,7 +80,7 @@ const FormUser = ({ agence, setAgence }) => {
        const hadleChange = event => {
         const { value, name } = event.target
         setAgence({ ...agence, [name]: value })
-        console.log(agence);
+       
 
     }
 

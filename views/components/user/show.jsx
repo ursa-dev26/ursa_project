@@ -51,7 +51,8 @@ const UserShow = () => {
                     setData(json?.data?.data) : setData([])
 
             } catch (error) {
-                console.log(error);
+                           new Error(""+error)
+
 
             }
         }

@@ -1,5 +1,5 @@
-import { Card, Layout } from "antd";
-import { Navigate, useNavigate, useSearchParams } from "react-router-dom";
+import { Card } from "antd";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import isValuePresent from "../validate.js";
 import { useEffect } from "react";
 
@@ -26,6 +26,9 @@ const HomeDownloader = () => {
       */
     const download = async (filename) => {
 
+        
+        
+
         try {
             const request = await window.fetch(url + "/download/" + filename, {
                 headers: headersHttp,
@@ -42,7 +45,7 @@ const HomeDownloader = () => {
             return true
 
         } catch (error) {
-            console.log(error);
+            new Error(""+error)
             return false
 
         }
@@ -52,7 +55,6 @@ const HomeDownloader = () => {
         if (download(file)) {
             navigate("/ticket")
         }
-        console.log("telechargement");
         
     }, []);
 

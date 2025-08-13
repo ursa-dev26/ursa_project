@@ -64,7 +64,8 @@ const UserAdd = () => {
             return null
 
         } catch (error) {
-            console.log("erreur", error);
+            new Error("" + error)
+
             return null;
         }
 
@@ -110,7 +111,7 @@ const UserAdd = () => {
                         <Space.Compact>
                             <Flex wrap gap="small">
 
-                                <Meta title={<FormUser setShow={setShow} tabTemp={tabTemp}  setTabTemp={setTabTemp} />} />
+                                <Meta title={<FormUser setShow={setShow} tabTemp={tabTemp} setTabTemp={setTabTemp} />} />
                                 {show ?
                                     <Badge
                                         count={

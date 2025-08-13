@@ -66,7 +66,8 @@ const AffectationAdd = () => {
             return null
 
         } catch (error) {
-            console.log("erreur", error);
+            new Error("" + error)
+
             return null;
         }
 
@@ -106,7 +107,8 @@ const AffectationAdd = () => {
                 setUser(json?.data?.data)
                 return json
             } catch (error) {
-                console.log(error);
+                new Error("" + error)
+
                 return null
             }
 
@@ -124,7 +126,8 @@ const AffectationAdd = () => {
                 setAgence(json?.data)
                 return json
             } catch (error) {
-                console.log(error);
+                new Error("" + error)
+
                 return null
             }
 

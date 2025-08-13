@@ -48,7 +48,8 @@ const Materielshow = () => {
                 json?.message == "succes" ?
                     setData(json.data) : setData([])
             } catch (error) {
-                console.log(error);
+                          new Error(""+error)
+
             }
         }
         return () => {

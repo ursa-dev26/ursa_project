@@ -365,7 +365,7 @@ const FormTicket = () => {
                         ]}
                         label="Incident">
                         <Select options={listIncident} onChange={hadleChangeSelect}
-                            placeholder="--Choix de l'agence" allowClear id="incident" />
+                            placeholder="--Choix d'incident" allowClear id="incident" />
 
                     </Form.Item>
                     {
@@ -381,8 +381,8 @@ const FormTicket = () => {
                                     <Select options={listMateriel?.map((materiel, i) => {
                                       return  {
                                             key: i+"mat",
-                                            label: materiel?.adresse_mac,
-                                            value: materiel?.libelle
+                                            label: materiel?.libelle,
+                                            value: materiel?.adresse_mac
                                         }
                                     } )} onChange={hadleChangeSelectisLibelechoise}
                                         placeholder="--Choix du materiel" allowClear id="incident" />

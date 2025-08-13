@@ -1,6 +1,9 @@
-import { DeleteOutlined, QuestionCircleOutlined } from "@ant-design/icons";
-import { Button, Flex,Popconfirm, Space } from "antd";
+import { DeleteOutlined, PaperClipOutlined, QuestionCircleOutlined } from "@ant-design/icons";
+import { Button, Flex, Popconfirm, Space, Typography } from "antd";
 import { Link } from "react-router-dom";
+import StringTo from "../stringTo";
+
+const { Paragraph, Text } = Typography
 
 
 
@@ -30,10 +33,8 @@ class DataSource {
             const json = await query.json()
             return json
         } catch (error) {
-            console.log(error);
-
-            console.log({ "erreur": error });
-
+            new Error("" + error)
+            return null
         }
 
     }
@@ -49,7 +50,7 @@ class DataSource {
             const json = await query.json()
             return json
         } catch (error) {
-            console.log(error);
+            new Error("" + error)
 
             return []
 
@@ -81,7 +82,8 @@ class DataSource {
             document.body.removeChild(link)
 
         } catch (error) {
-            console.log(error);
+            new Error("" + error)
+
 
         }
     }
@@ -95,31 +97,42 @@ class DataSource {
     getDatasource = (data) => {
         return data?.map((item, i) => ({
             key: i,
-            code: `${item?.code}`,
-            titre: `${item?.titre}`,
+            code: StringTo.upercase(item?.code),
+            titre: <div style={{maxWidth:200} }>
+                <Paragraph ellipsis={{ rows: 1, 
+                    expandable: true,
+                    tooltip:item?.titre,
+                     symbol: <PaperClipOutlined style={{ fontSize: "20px" }} /> }}>
+                    {item?.titre}
+                </Paragraph>
+            </div>,
             nom: `${item?.nom}  ${item?.prenom}`,
-            incident: `${item?.incident} `,
             file:
                 item?.joinfile ?
                     <ol>
                         {
                             item?.file.map(filename =>
-
-                                <li key={filename} style={{ maxWidth: 150 }}>
-                                    <Link to={`/ticket/download?name=${filename}`}  >
-                                        <p style={{
-                                            wordWrap: "break-word",
-                                            textWrap: "wrap"
-                                        }}>
+                                < li key={filename} >
+                                    <Link to={`/ticket/download?name=${encodeURIComponent(filename)}`}  >
+                                        <Paragraph style={{ maxWidth: 250 }}
+                                            ellipsis={{
+                                                rows: 1,
+                                                expandable: true,
+                                                tooltip: filename,
+                                                symbol: <PaperClipOutlined style={{ fontSize: "20px" }} />
+                                            }}  >
                                             {filename}
-                                        </p>
+                                        </Paragraph>
+
                                     </Link>
                                 </li>
+
+
                             )
                         }
 
                     </ol> : null,
-            agence: `${item?.libelle_agence + " / " + item?.localite_agence}`,
+            agence: item?.libelle_agence + " (" + StringTo.upercase(item?.localite_agence) + " )",
             action:
                 item?.status == 0 ?
                     <Flex vertical gap="small">

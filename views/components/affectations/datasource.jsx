@@ -24,11 +24,12 @@ class Datasource {
             })
 
             const json = await query.json()
-            console.log(json);
+            return json
 
 
         } catch (error) {
-            console.log({ "erreur": error });
+            new Error("" + error)
+            return null
 
         }
 

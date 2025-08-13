@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 
 
 
-const FormEdit = ({ ticket, affectationDefault, array_idassign,listAffectation }) => {
+const FormEdit = ({ ticket, affectationDefault, array_idassign, listAffectation }) => {
 
     const navigate = useNavigate()
     const [list, setList] = useState([])
@@ -37,8 +37,7 @@ const FormEdit = ({ ticket, affectationDefault, array_idassign,listAffectation }
             const json = await fetch.json()
             return json
         } catch (error) {
-            console.log("err", error);
-
+            new Error("" + error)
             return null
         }
 
@@ -72,7 +71,8 @@ const FormEdit = ({ ticket, affectationDefault, array_idassign,listAffectation }
             return json;
 
         } catch (error) {
-            console.log({ "err": error });
+            new Error("" + error)
+
 
             return null
         }
@@ -112,7 +112,8 @@ const FormEdit = ({ ticket, affectationDefault, array_idassign,listAffectation }
                 }
                 return null
             } catch (error) {
-                console.log("err", error);
+                new Error("" + error)
+
 
                 return null
             }
@@ -120,7 +121,7 @@ const FormEdit = ({ ticket, affectationDefault, array_idassign,listAffectation }
     }
 
 
-   
+
 
 
 
@@ -152,14 +153,14 @@ const FormEdit = ({ ticket, affectationDefault, array_idassign,listAffectation }
                     placeholder="Veuillez selectionner svpl !!"
                     defaultValue={affectationDefault}
                     onChange={handleChange}
-                   options={
-                        listAffectation?.map((value,ind)=>{
+                    options={
+                        listAffectation?.map((value, ind) => {
                             return {
-                                key:"nosign"+ind,
-                                label:value?.nom+" "+value?.prenom,
-                                value:value?.id
-                            } 
-                        } )
+                                key: "nosign" + ind,
+                                label: value?.nom + " " + value?.prenom,
+                                value: value?.id
+                            }
+                        })
                     }
                 />
             </Form.Item>

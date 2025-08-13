@@ -12,7 +12,6 @@ const columns = [
     { title: 'Code', dataIndex: 'code' },
     { title: "Titre", dataIndex: 'titre' },
     { title: 'Nom et Prenom', dataIndex: 'nom' },
-    { title: 'Incident', dataIndex: 'incident' },
     { title: 'File(s)', dataIndex: 'file' },
     { title: 'Agence', dataIndex: 'agence' },
     { title: null, dataIndex: 'action' },

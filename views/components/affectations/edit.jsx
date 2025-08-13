@@ -34,12 +34,13 @@ const AffectationEdit = () => {
                 })
                 const json = await query.json()
                 json?.message == "succes" ?
-                    setAffectation(json?.data[0] ) :
+                    setAffectation(json?.data[0]) :
                     setAffectation({})
 
 
             } catch (error) {
-                console.log(error);
+                new Error("" + error)
+
                 return null
             }
 
@@ -56,7 +57,8 @@ const AffectationEdit = () => {
                 setUser(json?.data?.data)
                 return json
             } catch (error) {
-                console.log(error);
+                new Error("" + error)
+
                 return null
             }
 
@@ -74,7 +76,8 @@ const AffectationEdit = () => {
                 setAgence(json?.data)
                 return json
             } catch (error) {
-                console.log(error);
+                new Error("" + error)
+
                 return null
             }
 
@@ -92,13 +95,13 @@ const AffectationEdit = () => {
             <Card cover={
                 <Watermark height={35} width={100} content={"URSA"}>
                     <h1>
-                        &nbsp;&nbsp;<RightOutlined />&nbsp;{affectation.matricule+" / "+affectation.nom+" "+affectation.prenom}    </h1>
+                        &nbsp;&nbsp;<RightOutlined />&nbsp;{affectation.matricule + " / " + affectation.nom + " " + affectation.prenom}    </h1>
                 </Watermark>}>
-                <Meta title={<EditAffectation affectation={affectation} setAffectation={setAffectation}  agence={agence} user={user} />} />
+                <Meta title={<EditAffectation affectation={affectation} setAffectation={setAffectation} agence={agence} user={user} />} />
             </Card>
         </Layout >
-    ):
-    <>
+    ) :
+        <>
             <div style={{
                 height: "50vh", alignItems: "center",
                 position: "relative", left: "10rem",
@@ -106,7 +109,7 @@ const AffectationEdit = () => {
             }} >
                 <Spin indicator={<LoadingOutlined style={{ fontSize: 68 }} spin />} />
             </div>
-    
+
         </>
 }
 

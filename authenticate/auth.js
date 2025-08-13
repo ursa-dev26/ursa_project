@@ -4,7 +4,6 @@ import JWT from "passport-jwt";
 import User from "../models/user.js";
 import bcrypt from "bcrypt";
 import dotenv from "dotenv"
-import Affectation from "../models/affectation.js";
 const { Strategy: JWTstrategiy, ExtractJwt } = JWT
 
 

@@ -1,26 +1,35 @@
-import { Avatar, Button, Col, Flex, Form, Input, Row, Select, Skeleton, Watermark } from "antd";
-import { useNavigate } from "react-router-dom";
-import { MailTwoTone, SendOutlined, SwapLeftOutlined, UserOutlined } from "@ant-design/icons";
-import { useState } from "react";
+import { Avatar, Button, Col, Flex, Form, Input, Row, Typography, Skeleton, Watermark, Badge } from "antd";
+import { Link, useNavigate } from "react-router-dom";
+import { MailTwoTone, PaperClipOutlined, SendOutlined, SwapLeftOutlined, UserOutlined } from "@ant-design/icons";
+import { useEffect, useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { Bubble } from "@ant-design/x";
+import isValuePresent from "../validate";
+import StringTo from "../stringTo";
+const { Paragraph } = Typography
 
 
 
-const Discution = () => {
+
+const Discution = ({ codeTicket, infoTicket, user, isLoggedIn }) => {
     const navigate = useNavigate()
     const [data, setData] = useState([])
     const [items, setItems] = useState([])
     const [hasMore, setHasMore] = useState(true);
     const [page, setPage] = useState(1);
     const [message, setmessage] = useState("");
+    const [discution, setDiscution] = useState([]);
 
-    const [array_message, setArray_Messages] = useState([{
-        status: 'interlocuteur',
-        sms: "je suis un locuteur bien administre et je veux demande le compte de tontine",
-    }])
 
-    const urlApi = import.meta.env.VITE_API
+
+
+    const url = import.meta.env.VITE_API
+    /** definition des entetes des requete */
+    const headersHttp = {
+        Accept: "application/json",
+        "Content-type": "application/json",
+        "Access-Control-Allow-Origin": " *"
+    }
 
     /**
     *@function  fetchData()
@@ -43,7 +52,7 @@ const Discution = () => {
         interlocuteur: {
             style: { maxWidth: 600 },
             placement: 'start',
-            avatar: { icon: <UserOutlined />, style: { background: '#fde3cf' } },
+            avatar: { icon: <UserOutlined />, style: { background: '#f17034ff' } },
         },
         locuteur: {
             style: { maxWidth: 600 },
@@ -59,18 +68,106 @@ const Discution = () => {
     }
 
     /**
+    *@function saveDicution() 
+    */
+    const saveDicution = async (data) => {
+        try {
+            const request = await window.fetch(`${url}/discution/add`, {
+                headers: headersHttp,
+                body: JSON.stringify(data),
+                method: "POST",
+                mode: "cors"
+            })
+
+            const json = await request?.json()
+
+
+            return json
+        } catch (error) {
+            new Error("" + error)
+            return null
+        }
+
+    }
+    /**
+     *@function  updateStatusTicket()
+     * mis a jour du status
+     */
+    const updateStatusTicket = async (element) => {
+
+
+        try {
+            const fetch = await window.fetch(`${url}/ticket/update/${element}`, {
+                headers: headersHttp,
+                body: JSON.stringify({
+                    "status": 2
+                }),
+                method: "PATCH",
+                mode: "cors"
+            })
+            const json = await fetch.json()
+            console.log("je suis appele", json);
+
+            return json
+        } catch (error) {
+
+            new Error("err" + error);
+
+            return null
+        }
+
+    }
+
+    /**
      *@function onFinish() 
      */
 
     const onFinish = () => {
-        setArray_Messages([...array_message, {
-            status: "locuteur",
-            sms: message,
-        }])
 
+        saveDicution(
+            {
+                commentaire: message,
+                ticket_ref: codeTicket,
+                affectation_ref: user?.id
+            })
         setmessage(null)
 
+        infoTicket?.map((val) => {
+            if (val?.status == 1) {
+                updateStatusTicket(codeTicket)
+
+            }
+        })
     }
+
+
+    useEffect(() => {
+        const showsms = async () => {
+            try {
+                const query = await window.fetch(`${url}/discution/show/${codeTicket}`, {
+                    headers: headersHttp,
+                    method: "GET",
+                    mode: "cors"
+                })
+                const json = await query.json()
+                if (isValuePresent(json?.data)) {
+                    setDiscution(json?.data)
+
+                }
+
+                return json
+            } catch (error) {
+                new Error("" + error)
+                return null
+            }
+        }
+
+
+
+        showsms()
+    }, [discution]);
+
+    const warningSms = "A titre d'attention! Le tickets ne sera pris en charge que si des traitement ont été detecté par le systeme. Merci !"
 
     return (
         <Flex gap="middle" vertical >
@@ -94,87 +191,208 @@ const Discution = () => {
                                 <SpeechButton />
                * 
                */}
-                <Watermark content={"URSA"}>
+                <Watermark content={""} style={{
+                    width: "300rem", background: "#d6d5d513", border: "1px solid transparent",
+                    borderRadius: "30px"
+                }}>
 
                     <Row>
-                        <Col xs={24} sm={24} md={24} lg={24}>
+
+                        <Col xs={24} sm={24} md={24} lg={16}>
                             <InfiniteScroll
-                            initialScrollY={450}
+                                initialScrollY={450}
                                 next={fetchData}
                                 loader={<Skeleton avatar paragraph={{ rows: 1 }} active />}
                                 hasMore={hasMore}
                                 height={450}
+                                style={{ marginBottom: "3rem", padding: "5rem" }}
                                 dataLength={data?.length}>
-                                <Row style={{
-                                    marginBottom: "3rem"
-                                }}>
-                                    <Col xs={24} sm={24} md={24} lg={24}>
 
-                                        <Bubble.List
-                                            paragraph={{ rows: 1 }}
-                                            roles={roles}
+                                <Bubble.List
+                                    roles={roles}
+                                    items={discution.map((value, index) => ({
+                                        key: index,
+                                        role: value?.id == user?.id ? 'locuteur' : 'interlocuteur',
+                                        content: <Paragraph style={{
+                                            width: 400,
+                                            textWrap: "wrap",
+                                            fontSize: "12px",
+                                            fontFamily: "monospace | serif "
+                                        }}
+                                            ellipsis={{ rows: 3, expandable: true, symbol: 'voir plus' }}   >
+                                            <span style={{
+                                                position: "absolute",
+                                                margin: "1px",
+                                                padding: "1px",
+                                                border: "1px solid white",
+                                                borderRadius: "15rem",
+                                                justifyContent: "center",
+                                                top: "-0.5rem",
+                                                left: value?.id != user?.id ? "0px" : "",
+                                                right: value?.id == user?.id ? "0px" : "",
+                                                lineHeight: "1rem",
+                                                background: isLoggedIn && value?.id == user?.id ? "#ffffffff" : "#ffffffff"
+                                            }}>
+                                                {value?.id == user?.id ?
+                                                    StringTo.upercase(user?.nom) + " " + StringTo.ucfirst(user?.prenom) :
+                                                    StringTo.upercase(value?.nom) + " " + StringTo.ucfirst(value?.prenom)
+                                                } <br />
+                                            </span>
+                                            <div style={{ fontFamily: "cursive | monospace ", fontSize: "16px" }}>
+                                                {value?.commentaire}
 
-                                            items={array_message.map(({ id, sms, status }) => ({
-                                                key: id,
-                                                role: status === 'locuteur' ? 'locuteur' : 'interlocuteur',
-                                                content: <div style={{
-                                                }}>
-                                                    {sms} </div>,
-                                            }))}
-                                        />
-
-                                    </Col>
-                                </Row>
-
-
+                                            </div>
+                                            <br />
+                                            <span style={{
+                                                position: "absolute",
+                                                margin: "1px",
+                                                padding: "1px",
+                                                border: "0px solid white",
+                                                borderRadius: "15rem",
+                                                justifyContent: "right",
+                                                alignItems: "end",
+                                                bottom: "-1px",
+                                                right: value?.id != user?.id ? "0px" : "",
+                                                left: value?.id == user?.id ? "0px" : "",
+                                                lineHeight: "1rem",
+                                                background: isLoggedIn && value?.id == user?.id ? "#ffffffff" : "#ffffffff"
+                                            }}>
+                                                {
+                                                    new Date(value?.date_envoie).toUTCString()
+                                                }
+                                            </span>
+                                        </Paragraph>,
+                                    }))}
+                                />
 
                             </InfiniteScroll>
+                            <Flex align="center" style={{
+                                justifyContent: "center",
+                                position: "relative",
+                                top: "-2rem"
+                            }} >
+
+                                <Form
+                                    style={{ maxWidth: "100rem", width: "30rem" }}
+                                    onFinish={onFinish}
+                                    labelCol={{ span: 0 }}
+                                    wrapperCol={{ span: 24 }}>
+                                    <Form.Item label={null}>
+                                        <Input value={message} placeholder="Sms"
+                                            onChange={handleChange} prefix={<MailTwoTone />}
+                                            size={50} style={{
+                                                border: "3px solid #9b8b8b5e",
+                                                textAlign: "center",
+                                                alignContent: "center",
+                                                borderRadius: "30px",
+                                            }}
+
+                                            suffix={<Avatar style={{ background: "green" }} icon={
+                                                <Button htmlType="submit" type="link">
+                                                    <SendOutlined style={{
+                                                        fontSize: "12px",
+                                                        color: "white"
+                                                    }} />
+                                                </Button>
+
+                                            } />} />
+                                    </Form.Item>
+                                </Form>
+
+                            </Flex>
+                        </Col>
+                        <Col xs={24} sm={24} md={24} lg={8}>
+                            <div style={{ display: "block", padding: "10px", margin: "2rem", fontFamily: "monospace", fontSize: "15px" }}>
+                                {
+                                    infoTicket?.map((val, ind) => {
+                                        return <>
+
+                                            {
+
+
+                                                val?.status == 1 ?
+                                                    <Paragraph key={"info" + ind}
+                                                        style={{
+                                                            border: "1px solid transparent",
+                                                            borderRadius: "15px",
+                                                            background: "#cbfd7ba8",
+                                                            margin: "1rem",
+                                                            padding: "0.2rem"
+                                                        }}
+                                                        ellipsis={{ tooltip: warningSms, rows: 3 }} >
+                                                        {warningSms}
+
+                                                    </Paragraph> : <> </>
+
+                                            }
+                                            < div style={{ display: "flex", gap: 3 }}>
+
+
+
+
+                                                <div>Etat du ticket:&nbsp;&nbsp;</div>
+                                                <div> <Badge key={"codet" + ind} count={
+                                                    val?.status == 1 ? "Assigné" :
+                                                        val?.status == 2 ? "Encours de traitement" :
+                                                            val?.status == 3 ? "Fin de traitement" : "Non assigné"
+
+
+                                                } /></div>
+                                            </div>
+                                            < div style={{ display: "flex", gap: 3 }}>
+                                                <div>Code du ticket:&nbsp;&nbsp;</div>
+                                                <div> <Badge key={"codet" + ind} count={codeTicket} /></div>
+                                            </div>
+
+                                            <div style={{ display: "flex", gap: "3px", marginTop: "2px" }}>
+                                                <div>Titre:&nbsp;&nbsp;</div>
+                                                <div style={{ fontStyle: "oblique", fontWeight: "bold" }}>{val?.titre} </div>
+                                            </div>
+
+                                            <div style={{ display: "flex", gap: "3px", marginTop: "2px" }}>
+                                                <div>Nom et prenom:&nbsp;&nbsp;</div>
+                                                <div style={{ fontStyle: "oblique", fontWeight: "bold" }}>
+                                                    {StringTo.upercase(val?.nom) + " " + StringTo.ucfirst(val?.prenom)} </div>
+                                            </div>
+                                            <div style={{ display: "block", gap: "3px", marginTop: "2px" }}>
+                                                <div>Piece jointe :</div>
+                                                <div>
+                                                    {
+                                                        val?.file.map(files => {
+                                                            return <Link to={`/ticket/download?name=${encodeURIComponent(files)}`}  >
+                                                                <Paragraph style={{ maxWidth: 250, color: "blue" }}
+                                                                    ellipsis={{
+                                                                        rows: 1,
+                                                                        expandable: true,
+                                                                        tooltip: files,
+                                                                        symbol: <PaperClipOutlined style={{ fontSize: "20px" }} />
+                                                                    }}>
+                                                                    {files}
+                                                                </Paragraph>
+                                                            </Link>
+                                                        })
+                                                    }
+                                                </div>
+                                            </div>
+
+                                            <div style={{ display: "flex", gap: "3px", marginTop: "2px" }}>
+                                                <div>Agence:&nbsp;&nbsp;</div>
+                                                <div style={{ fontStyle: "oblique", fontWeight: "bold" }}>
+                                                    {val?.code_agence + " (" + val?.libelle_agence + " " + val?.localite_agence + " )"} </div>
+                                            </div>
+                                        </ >
+
+                                    })
+                                }
+
+                            </div>
                         </Col>
 
                     </Row>
 
                 </Watermark>
-
-
-
-
-
             </div >
-            <Flex align="center" style={{
-                justifyContent:"center",
-                position:"relative",
-                top:"-2rem"
-            }  } >
 
-                <Form
-                style={{maxWidth:"100rem",}  }
-                    onFinish={onFinish}
-                    labelCol={{ span: 0}}
-                    wrapperCol={{ span: 24 }}>
-                    <Form.Item label={null}>
-                        <Input value={message} placeholder="Sms"
-                            onChange={handleChange} prefix={<MailTwoTone />}
-                            size={25} style={{
-                                border: "0px solid transparent",
-                                textAlign: "center",
-                                
-                                alignContent: "center",
-                                borderRadius: "30px"
-                            }}
-
-                            suffix={<Avatar style={{ background: "green" }} icon={
-                                <Button htmlType="submit" type="link">
-                                    <SendOutlined style={{
-                                        fontSize: "12px",
-                                        color: "white"
-                                    }} />
-                                </Button>
-
-                            } />} />
-                    </Form.Item>
-                </Form>
-
-            </Flex>
         </Flex >
     );
 

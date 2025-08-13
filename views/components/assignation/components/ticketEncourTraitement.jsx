@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import FormEdit from "./FormEdit";
 const { Text } = Typography
 
-const ListAssigne = () => {
+const ListEncourTraitement = () => {
 
     const navigate = useNavigate()
 
@@ -78,7 +78,7 @@ const ListAssigne = () => {
 
     const fetchDatafileNojoinNoSign = async () => {
         try {
-            const request = await window.fetch(`${urlApi}/assignation/showjoin`, {
+            const request = await window.fetch(`${urlApi}/assignation/showEncourjoin`, {
                 headers: headersHttp,
                 mode: "cors",
                 method: "GET"
@@ -105,7 +105,7 @@ const ListAssigne = () => {
      */
     const fetchDataFileJoinNoSign = async () => {
         try {
-            const request = await window.fetch(`${urlApi}/assignation/shownojoin`, {
+            const request = await window.fetch(`${urlApi}/assignation/showencoursnojoin`, {
                 headers: headersHttp,
                 mode: "cors",
                 method: "GET"
@@ -242,7 +242,7 @@ const ListAssigne = () => {
                                         <Avatar key={"join" + index} onClick={
                                             () => {
                                                 setShowinfo(!showinfo)
-                                                let widget = document.querySelector(".descA" + index)
+                                                let widget = document.querySelector(".descEN" + index)
 
                                                 showinfo ? widget.style.display = "flex" : widget.style.display = "none"
                                             }}
@@ -265,7 +265,7 @@ const ListAssigne = () => {
                                         <Avatar key={"join" + index} onClick={
                                             () => {
                                                 setShowinfo(!showinfo)
-                                                let widget = document.querySelector(".descA" + index)
+                                                let widget = document.querySelector(".descEN" + index)
                                                 showinfo ? widget.style.display = "flex" : widget.style.display = "none"
                                             }}
                                             style={{ background: 'green', padding: "1rem", margin: "0.1rem" }} icon={<Button
@@ -275,7 +275,7 @@ const ListAssigne = () => {
 
                                         <Avatar onClick={
                                             () => {
-                                                navigate(`/assignation/commentaire?code=${item?.code}`)
+                                                navigate(`/assignation/comment?code=${item?.code}`)
                                             }
                                         } style={{ background: 'green', padding: "1rem", margin: "0.1rem" }} icon={<Button
                                             type="link" icon={<CommentOutlined
@@ -285,7 +285,7 @@ const ListAssigne = () => {
                                     </>}
                                 />}
                                 description={
-                                    <div className={"descA" + index} style={{ display: "none", justifyContent: "left" }}>
+                                    <div className={"descEN" + index} style={{ display: "none", justifyContent: "left" }}>
 
 
                                         {/** widget pour d'affichage des infos du ticket */}
@@ -402,4 +402,4 @@ const ListAssigne = () => {
     )
 }
 
-export default ListAssigne;
+export default ListEncourTraitement;

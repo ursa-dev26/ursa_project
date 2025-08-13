@@ -71,7 +71,7 @@ export const AuthProvider = ({ children }) => {
 
         } catch (error) {
             setIsLoggedIn(false)
-
+            new Error(""+error)
             return isLoggedIn
 
         };

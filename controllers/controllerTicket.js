@@ -43,7 +43,6 @@ class Tickets {
 
 
         } catch (error) {
-            console.log(error);
 
             if (error) {
                 this.erreur.getError(error, res)
@@ -96,14 +95,13 @@ class Tickets {
                 .groupBy("users.prenom")
                 .groupBy("agences.libelle")
                 .groupBy("agences.localite")
-                .where({"joinfile": true })
+                .where({"joinfile": true,"status":0 })
 
 
             isValuePresent(data) ?
                 toastSms(res, true, data) :
                 toastSms(res, false, "Aucun element n'a été trouvé")
         } catch (error) {
-            console.log("err", error);
 
             toastSms(res, false, "Fatal error")
         }
@@ -122,7 +120,7 @@ class Tickets {
                 .join("affectations", "tickets.affectation_ref", "affectations.id")
                 .join("agences", "agences.code", "affectations.agence_ref")
                 .join("users", "users.matricule", "affectations.user_ref")
-                .where({"joinfile": false })
+                .where({"joinfile": false,"status":0 })
 
             isValuePresent(data) ?
                 toastSms(res, true, data) :
@@ -163,7 +161,6 @@ class Tickets {
                 toastSms(res, true, data) :
                 toastSms(res, false, "Aucun element n'a été trouvé")
         } catch (error) {
-            console.log("err", error);
 
             toastSms(res, false, "Fatal error")
         }
@@ -234,27 +231,64 @@ class Tickets {
         try {
             const { ticket } = req?.params
             const data = await Ticket.query()
-                .select("tickets.*",
-                    "users.matricule", "users.nom", "users.prenom", "users.role",
-                    "incidents.code as code_incident", "incidents.type as type_incident",
-                    "agences.code as code_agence", "agences.libelle as libelle_agence", "agences.localite as localite_agence"
-
-                )
+             .select("tickets.*", "users.nom", "users.prenom",
+                    "agences.libelle as libelle_agence", "agences.localite as localite_agence","agences.code as code_agence")
+                .select(Ticket.raw("array_agg(files.nom) as file"))
                 .join("affectations", "tickets.affectation_ref", "affectations.id")
-                .join("incidents", "tickets.incident_ref", "incidents.id")
-                .join("users", "affectations.user_ref", "users.matricule")
-                .join("agences", "affectations.agence_ref", "agences.code")
-                .where({ "tickets.code": ticket })
+                .join("agences", "agences.code", "affectations.agence_ref")
+                .join("users", "users.matricule", "affectations.user_ref")
+                .join("files", "files.ticket_ref", "tickets.code")
+                .where({ "tickets.code": ticket})
+                .groupBy("tickets.code")
+                .groupBy("users.nom")
+                .groupBy("users.prenom")
+                .groupBy("agences.libelle")
+                .groupBy("agences.localite")
+                .groupBy("agences.code")
+                
             isValuePresent(data) ?
                 toastSms(res, true, data) :
                 res.send("Aucun element n'est trouvé")
 
         } catch (error) {
+            
             if (error) {
                 this.erreur.getError(error, res)
             }
         }
     }
+
+     /**
+     *  @function editNojoin()
+     *  @param req 
+     *  @param res 
+     * fonction de recuperation d'un ticket
+     * 
+     */
+    editNojoin = async (req, res) => {
+        try {
+            const { ticket } = req?.params
+            const data = await Ticket.query()
+             .select("tickets.*", "users.nom", "users.prenom",
+                    "agences.libelle as libelle_agence", "agences.localite as localite_agence","agences.code as code_agence")
+                .join("affectations", "tickets.affectation_ref", "affectations.id")
+                .join("agences", "agences.code", "affectations.agence_ref")
+                .join("users", "users.matricule", "affectations.user_ref")
+                .where({ "tickets.code": ticket})
+                
+            isValuePresent(data) ?
+                toastSms(res, true, data) :
+                res.send("Aucun element n'est trouvé")
+
+        } catch (error) {
+            
+            if (error) {
+                this.erreur.getError(error, res)
+            }
+        }
+    }
+
+
     /**
      *  @function del()
      *  @param req 
@@ -298,24 +332,19 @@ class Tickets {
 
     update = async (req, res) => {
         const { ticket } = req?.params
+        
 
         try {
 
             const data = await Ticket.query()
                 .select("tickets.*", "users.nom", "users.prenom",
                     "agences.libelle as libelle_agence", "agences.localite as localite_agence",)
-                .select(Ticket.raw("array_agg(files.nom) as file"))
                 .join("affectations", "tickets.affectation_ref", "affectations.id")
                 .join("agences", "agences.code", "affectations.agence_ref")
                 .join("users", "users.matricule", "affectations.user_ref")
-                .join("files", "files.ticket_ref", "tickets.code")
-                .where({ "tickets.status": 0, "joinfile": true })
-                .groupBy("tickets.code")
-                .groupBy("users.nom")
-                .groupBy("users.prenom")
-                .groupBy("agences.libelle")
-                .groupBy("agences.localite")
-                .where({ "tickets.code": ticket })
+                .where({ "tickets.code": ticket})
+
+                
 
             if (isValuePresent(data)) {
                 const result = await Ticket.query()
@@ -375,7 +404,6 @@ class Tickets {
                 toastSms(res, false, "Aucun element n'as été trouvée")
 
         } catch (error) {
-            console.log(error);
 
             if (error) {
                 this.erreur.getError(error, res)

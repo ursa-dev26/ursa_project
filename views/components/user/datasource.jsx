@@ -26,8 +26,7 @@ class Datasource {
 
             await query.json()
         } catch (error) {
-            console.log({ "erreur": error });
-
+           return new Error("" + error)
         }
 
     }

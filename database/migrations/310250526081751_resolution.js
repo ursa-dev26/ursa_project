@@ -9,6 +9,8 @@ exports.up = function (knex) {
         table.string("commentaire")
         table.string("ticket_ref")
         table.foreign("ticket_ref").references("code").inTable("tickets").deferrable("deferred")
+        table.integer("affectation_ref")
+        table.foreign("affectation_ref").references("id").inTable("affectations").deferrable("deferred")
         table.timestamps(true,true)
 
     })

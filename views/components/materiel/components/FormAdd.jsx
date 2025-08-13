@@ -41,7 +41,7 @@ const FormAdd = () => {
     const [isMacExiste, setIsMacExiste] = useState(false)
 
 
-    const ListOptions=["Neuf","Hors service","autre"] 
+    const ListOptions = ["Neuf", "Hors service", "autre"]
     /** on verifie l'existance du materiel */
     const findOne = async (mac) => {
         try {
@@ -54,7 +54,7 @@ const FormAdd = () => {
 
             return json;
         } catch (error) {
-            console.log(error);
+            new Error("" + error)
             return null
 
         }
@@ -72,7 +72,7 @@ const FormAdd = () => {
 
             return json;
         } catch (error) {
-            console.log(error);
+            new Error("" + error)
             return null
 
         }
@@ -81,8 +81,8 @@ const FormAdd = () => {
     /** on Finish */
     const onFinish = async () => {
         const response = await findOne(data.adresse_mac)
-        console.log(response);
-        
+
+
         if (response?.message != "error") {
             setIsMacExiste(true)
         } else {
@@ -186,14 +186,14 @@ const FormAdd = () => {
                         { required: true, message: "Veuillez selectioné un etat" }
                     ]}
                         label="Etat">
-                        <Select onChange={hadleChageSelect} options={ListOptions.map((val,ind)=>{
+                        <Select onChange={hadleChageSelect} options={ListOptions.map((val, ind) => {
                             return {
-                                key:ind,
-                                label:val,
-                                value:val
-                            } 
-                        } )} placeholder="Etat" allowClear />
-                          
+                                key: ind,
+                                label: val,
+                                value: val
+                            }
+                        })} placeholder="Etat" allowClear />
+
                     </Form.Item>
 
                     {/** button de validation de formulaire */}

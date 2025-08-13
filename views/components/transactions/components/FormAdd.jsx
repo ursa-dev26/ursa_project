@@ -53,7 +53,8 @@ const FormAdd = ({ agence, materiel }) => {
             const json = await request.json()
             return json;
         } catch (error) {
-            console.log(error);
+                        new Error(""+error)
+
             return null
 
         }

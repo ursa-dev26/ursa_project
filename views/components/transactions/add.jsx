@@ -36,7 +36,8 @@ const TransactionAdd = () => {
                 setAgence(json?.data)
                 return json
             } catch (error) {
-                console.log(error);
+                new Error("" + error)
+
 
                 return []
             }
@@ -56,7 +57,8 @@ const TransactionAdd = () => {
                 return json
 
             } catch (error) {
-                console.log(error);
+                new Error("" + error)
+
 
                 return []
             }

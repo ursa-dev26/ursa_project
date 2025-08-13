@@ -1,7 +1,6 @@
 import { Button, Form, Input, Select } from "antd";
 import isValuePresent from "../../validate";
 import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
 
 
 
@@ -24,6 +23,7 @@ const FormAdd = ({ ticket,listAffectation }) => {
      * mis a jour du status
      */
     const updateStatusTicket = async (element) => {
+
         try {
             const fetch = await window.fetch(`${api}/ticket/update/${element}`, {
                 headers: headersHttp,
@@ -34,14 +34,14 @@ const FormAdd = ({ ticket,listAffectation }) => {
                 mode: "cors"
             })
             const json = await fetch.json()
+
             return json
         } catch (error) {
+
             new Error("err" + error);
 
             return null
         }
-
-
 
     }
 
@@ -66,7 +66,9 @@ const FormAdd = ({ ticket,listAffectation }) => {
                         mode: "cors"
                     })
                     const json = await fetch.json()
+
                     if (isValuePresent(json)) {
+                        
                         updateStatusTicket(ticket)
                         navigate(`/assignation/commentaire?code=${ticket} `)
                     }
@@ -79,14 +81,6 @@ const FormAdd = ({ ticket,listAffectation }) => {
             }
         })
     }
-
-
-    useEffect(() => {
-        console.log(listAffectation);
-        
-    }, []);
-    
-
 
 
     return (

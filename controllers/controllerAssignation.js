@@ -76,7 +76,7 @@ class Assignations {
 
     /**
    *  @function showJoin()
-   *  @param _   .select(Ticket.raw("array_agg(files.nom) as file"))
+   *  @param _   
    *  @param res 
    */
     showassignejoin = async (_, res) => {
@@ -135,6 +135,83 @@ class Assignations {
             toastSms(res, false, "Fatal error")
         }
     }
+
+
+    /**************************************************
+    *  requete pour les ticket en cours de traitement
+     **************************************************/
+
+
+    /**
+   *  @function showEncourjoin()
+   *  @param _   
+   *  @param res 
+   */
+    showEncourjoin = async (_, res) => {
+        try {
+            const data = await Ticket.query()
+                .select("tickets.*", "users.*",
+                    "agences.libelle as libelle_agence", "agences.localite as localite_agence")
+                .select(Ticket.raw("array_agg(DISTINCT files.nom) as file"))
+                .select(Assignation.raw("array_agg(assignations.affectation_assign) as affectation"), Assignation.raw("array_agg(assignations.id) as idassign"))
+                .join("assignations", "assignations.ticket_ref", "tickets.code")
+                .join("files", "files.ticket_ref", "tickets.code")
+                .join("affectations", "tickets.affectation_ref", "affectations.id")
+                .join("users", "users.matricule", "affectations.user_ref")
+                .join("agences", "agences.code", "affectations.agence_ref")
+                .groupBy("tickets.code")
+                .groupBy("users.matricule")
+                .groupBy("agences.code")
+                .where({ "tickets.status": 2, "joinfile": true })
+
+
+            isValuePresent(data) ?
+                toastSms(res, true, data) :
+                toastSms(res, false, "Aucun element n'a été trouvé")
+        } catch (error) {
+            console.log("err", error);
+
+            toastSms(res, false, "Fatal error")
+        }
+    }
+
+ /**
+    *  @function showEncourNojoin()
+    *  @param _ 
+    *  @param res 
+    */
+    showEncourNojoin = async (_, res) => {
+        try {
+            const data = await Ticket.query()
+                .select("tickets.*", "users.*",
+                    "agences.libelle as libelle_agence", "agences.localite as localite_agence")
+                .select(Assignation.raw("array_agg(assignations.affectation_assign) as affectation"), Assignation.raw("array_agg(assignations.id) as idassign"))
+                .join("assignations", "assignations.ticket_ref", "tickets.code")
+                .join("affectations", "tickets.affectation_ref", "affectations.id")
+                .join("users", "users.matricule", "affectations.user_ref")
+                .join("agences", "agences.code", "affectations.agence_ref")
+                .groupBy("tickets.code")
+                .groupBy("users.matricule")
+                .groupBy("agences.code")
+                .where({ "tickets.status": 2, "joinfile": false })
+
+            isValuePresent(data) ?
+                toastSms(res, true, data) :
+                toastSms(res, false, "Aucun element n'a été trouvé")
+
+        } catch (error) {
+            toastSms(res, false, "Fatal error")
+        }
+    }
+
+
+
+
+
+
+
+
+
 
 
 

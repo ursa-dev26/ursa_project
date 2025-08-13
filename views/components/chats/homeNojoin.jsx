@@ -7,7 +7,7 @@ const { Meta } = Card
 
 
 
-const ChatSms = () => {
+const ChatSmsNo = () => {
     const [searchParams, setSearchParams] = useSearchParams()
     const codeTicket = searchParams.get('code')
     const { isLoggedIn, user } = useAuth();
@@ -25,7 +25,7 @@ const ChatSms = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const request = await window.fetch(`${url}/ticket/edit/${codeTicket}  `, {
+                const request = await window.fetch(`${url}/ticket/editnojoin/${codeTicket}  `, {
                     headers: headersHttp,
                     mode: "cors",
                     method: "GET"
@@ -39,6 +39,8 @@ const ChatSms = () => {
                     return []
                 }
             } catch (error) {
+                console.log("json");
+
                 new Error("" + error)
                 return []
             }
@@ -49,8 +51,8 @@ const ChatSms = () => {
 
     return (
         < Layout >
-            <Card cover={<Meta  
-            description={<Discution codeTicket={codeTicket} user={user} infoTicket={data} isLoggedIn={isLoggedIn} />} />
+            <Card cover={<Meta
+                description={<Discution codeTicket={codeTicket} user={user} infoTicket={data} isLoggedIn={isLoggedIn} />} />
 
             }>
 
@@ -61,4 +63,4 @@ const ChatSms = () => {
 }
 
 
-export default ChatSms;
+export default ChatSmsNo;

@@ -28,7 +28,7 @@ class Datasource {
             return json
 
         } catch (error) {
-            console.log({ "erreur": error });
+            new Error(""+error)
             return null
 
         }

@@ -5,6 +5,7 @@ import StickyBox from 'react-sticky-box';
 import ListNonassigne from "./components/ticketNonassigne";
 import ListAssigne from "./components/ticketAssigné";
 import { useState } from "react";
+import ListEncourTraitement from "./components/ticketEncourTraitement";
 
 
 
@@ -12,7 +13,7 @@ import { useState } from "react";
 
 const AssignationShow = () => {
 
-    
+
     //theme de l'apploication
     const {
         token: { colorBgContainer },
@@ -32,15 +33,28 @@ const AssignationShow = () => {
             style: { height: 400 }
         },
         {
-            label: "Ticket assigné",
+            label: "En attente de traitement",
             key: 2,
+            children: <ListAssigne />,
+            style: { height: 400 }
+        },
+
+        {
+            label: "En cours de traitement",
+            key: 3,
+            children: <ListEncourTraitement />,
+            style: { height: 400 }
+        },
+        {
+            label: "Cloture",
+            key: 4,
             children: <ListAssigne />,
             style: { height: 400 }
         }
     ];
 
 
-  
+
 
 
 

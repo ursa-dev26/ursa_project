@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import FormEdit from "./components/FormEdit";
 
-const {Meta}=Card 
+const { Meta } = Card
 
 const MaterielEdit = () => {
 
@@ -38,7 +38,8 @@ const MaterielEdit = () => {
 
 
             } catch (error) {
-                console.log(error);
+                new Error("" + error)
+
                 return null
             }
 
@@ -54,7 +55,7 @@ const MaterielEdit = () => {
                 <h1>
                     &nbsp;&nbsp;<RightOutlined />&nbsp;{data?.adresse_mac}    </h1>
             </Watermark>}>
-            <Meta title={<FormEdit data={data} setData={setData} materiel={materiel}  />} />
+            <Meta title={<FormEdit data={data} setData={setData} materiel={materiel} />} />
         </Card>
     </Layout >)
 

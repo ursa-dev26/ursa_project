@@ -14,6 +14,7 @@ import passport from "../authenticate/auth.js";
 import jwt from "jsonwebtoken"
 import dotenv from "dotenv"
 import Users from "../controllers/controllerUsers.js";
+import Traitement from "../controllers/controllerTraitement.js";
 dotenv.config()
 
 
@@ -23,6 +24,7 @@ dotenv.config()
  */
 
 const route = express.Router()
+const ob_traitement = new Traitement()
 const ob_agence = new Agence()
 const ob_ticket = new Tickets()
 const ob_materiel = new Materiels()
@@ -82,7 +84,7 @@ route.post("/login", (req, res, next) => {
 				res.cookie('authuser', { data: user, token: authToken },
 					{
 						httpOnly: true,
-						maxAge: 3600000,
+						maxAge: 9600000,
 						secure: false   // en production changé la valeur en true pour garantir que les cookies soit envoié s'implement par https
 					})
 
@@ -137,6 +139,7 @@ route.get("/ticket/assigne", (req, res) => { ob_assign.showassigne(req, res) })
 route.get("/ticket/assignejoin", (req, res) => { ob_assign.showassignejoin(req, res) })
 
 route.get("/ticket/edit/:ticket", (req, res) => { ob_ticket.edit(req, res) })
+route.get("/ticket/editnojoin/:ticket", (req, res) => { ob_ticket.editNojoin(req, res) })
 route.post("/ticket/showByUser", (req, res) => { ob_ticket.showByUser(req, res) })
 route.delete("/ticket/delete/:ticket", (req, res) => { ob_ticket.del(req, res) })
 route.patch("/ticket/update/:ticket", (req, res) => { ob_ticket.update(req, res) })
@@ -217,6 +220,11 @@ route.get("/assignation/show", (req, res) => { ob_assign.show(req, res) })
 route.get("/assignation/showjoin", (req, res) => { ob_assign.showassignejoin(req, res) })
 route.get("/assignation/shownojoin", (req, res) => { ob_assign.showassigne(req, res) })
 
+route.get("/assignation/showEncourjoin", (req, res) => { ob_assign.showEncourjoin(req, res) })
+route.get("/assignation/showencoursnojoin", (req, res) => { ob_assign.showEncourNojoin(req, res) })
+
+
+
 
 route.get("/assignation/edit/:assign", (req, res) => { ob_assign.edit(req, res) })
 route.delete("/assignation/delete/:assign", (req, res) => { ob_assign.del(req, res) })
@@ -242,6 +250,14 @@ route.get("/affectation/find/:user", (req, res) => { ob_affectation.find(req, re
 route.get("/affectation/edit/:affect", (req, res) => { ob_affectation.edit(req, res) })
 route.delete("/affectation/delete/:affect", (req, res) => { ob_affectation.del(req, res) })
 route.patch("/affectation/update/:affect", (req, res) => { ob_affectation.update(req, res) })
+
+/** 
+ * route pour les discutions
+ */
+
+route.post("/discution/add", (req, res) => { ob_traitement.add(req, res) })
+route.get("/discution/show/:ticket", (req, res) => { ob_traitement.show(req, res) })
+
 
 
 export default route
